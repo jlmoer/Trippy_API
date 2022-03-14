@@ -10,6 +10,9 @@ app.use(express.json());
 // Import des routes:
 app.use("/hotels", hotelsRouter);
 app.use("/restaurants", restaurantsRouter);
+app.get("/", (_req, res) => {
+    res.send("trippy_api")
+})
 
 // Création du serveur:
 app.listen(8000, () => console.log("Listening on port 8000..."));

@@ -11,9 +11,9 @@ const schema = Joi.object({
     address: Joi.string().max(30).required(),
     city: Joi.string().max(30).required(),
     country: Joi.string().max(30).required(),
-    stars: Joi.number().max(5).required(),
+    stars: Joi.number().min(1).max(5).required(),
     cuisine: Joi.string().max(30).required(),
-    priceCategory: Joi.number().max(3).required(),
+    priceCategory: Joi.number().min(1).max(3).required(),
 });
 
 // Export des modules:
