@@ -3,10 +3,12 @@ const Joi = require("joi");
 
 // Import d'express:
 const express = require("express");
+const { append } = require("express/lib/response");
 const router = express.Router();
 
 // Création du schéma Joi:
 const schema = Joi.object({
+    id: Joi.number().required(),
     name: Joi.string().max(30).required(),
     address: Joi.string().max(30).required(),
     city: Joi.string().max(30).required(),
@@ -21,42 +23,95 @@ const schema = Joi.object({
 const hotels = [
     {
         "id": 1,
-        "name": "Les trois Mousquetaires",
-        "address": "22 av des Champs-Élysées",
+        "name": "Imperial Hotel",
+        "address": "84 av des Champs-Élysées",
         "city": "Paris",
         "country": "France",
-        "stars": 4,
-        "cuisine": "french",
+        "stars": 5,
+        "hasSpa": true,
+        "hasPool": true,
         "priceCategory": 3
     },
     {
         "id": 2,
-        "name": "The Fat Guy",
-        "address": "47 Jackson Boulevard",
-        "city": "New York",
-        "country": "US",
-        "stars": 5,
-        "cuisine": "burger",
-        "priceCategory": 1
+        "name": "The Queen",
+        "address": "3 Darwin Street",
+        "city": "London",
+        "country": "England",
+        "stars": 4,
+        "hasSpa": true,
+        "hasPool": false,
+        "priceCategory": 3
     },
     {
         "id": 3,
-        "name": "Veggies",
-        "address": "77 Avenir Street",
-        "city": "Sydney",
-        "country": "Australia",
-        "stars": 5,
-        "cuisine": "vegan",
+        "name": "Kiwi land",
+        "address": "4587 George St.",
+        "city": "Auckland",
+        "country": "New-Zealand",
+        "stars": 3,
+        "hasSpa": false,
+        "hasPool": true,
         "priceCategory": 2
     }
 ]
 
 // Création des routes de base pour manipuler les données qui correspondent aux hôtels:
 
-// Création de la route GET ("/hotels") qui retournera tous les hôtels:
+// Création de la route GET qui retournera tous les hôtels:
 router.get("/", (_req, res) => {
     res.json(hotels)
 });
+
+// Création de la route GET qui retourne un hôtel par id:
+router.get("/:id", (req, res) => {
+    const hotel = hotels.find((hotel) => {
+        return hotel.id === parseInt(req.params.id);
+    });
+    res.json({
+        hotel
+    })
+});
+
+// Création de la route POST qui permet de créer un nouvel hôtel:
+router.post("/", (req, res) => {
+    const validationResult = schema.validate(req.body);
+    if (validationResult.error) {
+        return res.status(400).json({
+            message: validationResult.error,
+        });
+    }
+    hotels.push({
+        id: req.body.id,
+        name: req.body.name,
+        address: req.body.address,
+        city: req.body.city,
+        country: req.body.country,
+        stars: req.body.stars,
+        hasSpa: req.body.hasSpa,
+        hasPool: req.body.hasPool,
+        priceCategory: req.body.priceCategory,
+    });
+    res.send("Hôtel ajouté");
+});
+
+// Création de la route PATCH qui permet de mettre à jour le nom d'un hôtel:
+router.patch("/:id", (req, res) => {
+    const hotel = hotels.find((hotel) => {
+        return hotel.id === parseInt(req.params.id);
+    });
+    hotel.name = req.body.name;
+    res.send("Nom modifié");
+});
+
+// Création de la route DELETE qui permet d'effacer un hôtel:
+router.delete("/:id", (req, res) => {
+    const hotel = hotels.find((hotel) => {
+        return hotel.id === parseInt(req.params.id);
+    });
+    hotel.name = req.body.name;
+    res.send("Hôtel supprimé");
+})
 
 // Export des modules:
 module.exports = router;
