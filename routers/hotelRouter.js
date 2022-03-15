@@ -58,8 +58,38 @@ const hotels = [
 // Création des routes de base pour manipuler les données qui correspondent aux hôtels:
 
 // Création de la route GET qui retournera tous les hôtels:
-router.get("/", (_req, res) => {
-    res.json(hotels)
+router.get("/", (req, res) => {
+    let currentHotel = hotels;
+    if (req.query.country) {
+        currentHotel = currentHotel.filter((hotel) => {
+            return (
+                hotel.country.toString().toLowerCase() === req.query.country.toString().toLowerCase()
+            )
+        })
+    }
+    // console.log(req.query);
+    if (req.query.priceCategory) {
+        currentHotel = currentHotel.filter((hotel) => {
+            return (
+                hotel.priceCategory.toString() === req.query.priceCategory.toString()
+            )
+        })
+    }
+    if (req.query.hasSpa) {
+        currentHotel = currentHotel.filter((hotel) => {
+            return (
+                hotel.hasSpa.toString() === req.query.hasSpa.toString()
+            )
+        })
+    }
+    if (req.query.hasPool) {
+        currentHotel = currentHotel.filter((hotel) => {
+            return (
+                hotel.hasPool.toString() === req.query.hasPool.toString()
+            )
+        })
+    }
+    res.json(currentHotel)
 });
 
 // Création de la route GET qui retourne un hôtel par id:

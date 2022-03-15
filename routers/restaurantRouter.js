@@ -7,6 +7,7 @@ const router = express.Router();
 
 // Création du schéma Joi:
 const schema = Joi.object({
+    id: Joi.number().required(),
     name: Joi.string().max(30).required(),
     address: Joi.string().max(30).required(),
     city: Joi.string().max(30).required(),
@@ -53,8 +54,23 @@ const restaurants = [
 // Création des routes de base pour manipuler les données qui correspondent aux restaurants:
 
 // Création de la route GET qui retournera tous les restaurants:
-router.get("/", (_req, res) => {
-    res.json(restaurants)
+router.get("/", (req, res) => {
+    let currentRestaurant = restaurants;
+    if (req.query.country) {
+        currentRestaurant = currentRestaurant.filter((restaurant) => {
+            return (
+                restaurant.country.toLowerCase() === req.query.country.toLowerCase()
+            )
+        })
+    }
+    if (req.query.priceCategory) {
+        currentRestaurant = currentRestaurant.filter((restaurant) => {
+            return (
+                restaurant.priceCategory.toString() === req.query.priceCategory.toString()
+            )
+        })
+    }
+    res.json(currentRestaurant)
 });
 
 // Création de la route GET qui retourne un restaurant par id:
@@ -105,6 +121,11 @@ router.delete("/:id", (req, res) => {
     restaurant.name = req.body.name;
     res.send("Restaurant supprimé");
 });
+
+// Advanced CRUDs:
+
+// Trouver les restaurants situés dans un certain pays:
+
 
 // Export des modules:
 module.exports = router;
