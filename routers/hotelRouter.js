@@ -3,7 +3,6 @@ const Joi = require("joi");
 
 // Import d'express:
 const express = require("express");
-const { append } = require("express/lib/response");
 const router = express.Router();
 
 // Création du schéma Joi:
@@ -73,7 +72,7 @@ router.get("/:id", (req, res) => {
     })
 });
 
-// Création de la route POST qui permet de créer un nouvel hôtel:
+// Création de la route POST qui permet d'ajouter un nouvel hôtel:
 router.post("/", (req, res) => {
     const validationResult = schema.validate(req.body);
     if (validationResult.error) {
@@ -111,7 +110,7 @@ router.delete("/:id", (req, res) => {
     });
     hotel.name = req.body.name;
     res.send("Hôtel supprimé");
-})
+});
 
 // Export des modules:
 module.exports = router;
